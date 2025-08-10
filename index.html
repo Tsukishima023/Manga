@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>惑星脳メシ漫画荘 | ギャラリー</title>
   <meta name="description" content="惑星脳メシ漫画荘の連載漫画ギャラリー。欠陥品の記憶／惑星脳メシ荘。">
-  <!-- はんなり明朝フォント読み込み -->
+  <!-- はんなり明朝フォント -->
   <link href="https://fonts.googleapis.com/css2?family=Hannari&display=swap" rel="stylesheet">
   <style>
     :root{
@@ -14,7 +14,11 @@
     *{box-sizing:border-box}
     html,body{
       margin:0;
-      background:var(--bg);
+      background-color:var(--bg);
+      background-image:
+        repeating-radial-gradient(circle at 20% 30%, rgba(255,255,255,0.15) 0px, transparent 2px, transparent 60px),
+        repeating-radial-gradient(circle at 80% 70%, rgba(255,255,255,0.12) 0px, transparent 1.5px, transparent 40px);
+      background-size: 200px 200px, 300px 300px;
       color:var(--ink);
       font:16px/1.8 'Hannari', serif;
     }
@@ -58,9 +62,10 @@
 
     .series-block{
       border:1px solid var(--sub);
-      background:var(--panel);
+      background:rgba(21,21,21,0.9);
       border-radius:14px;
       padding:16px;
+      backdrop-filter: blur(2px);
     }
     .series-block h2{
       margin:0 0 8px;
@@ -140,7 +145,7 @@
               <div class="title">欠陥品タウン ― 第1話</div>
               <div class="actions">
                 <a class="btn" href="./kekkan/01/index.html">読む</a>
-                <a class="btn" href="./kekkan/01/zip/01.zip">ZIP</a>
+                <a class="btn" href="./kekkan/01/zip/01.zip">更新通知</a>
               </div>
             </div>
           </article>
@@ -150,7 +155,7 @@
       <!-- 惑星脳メシ荘 -->
       <section class="series-block" aria-labelledby="wakusei-title">
         <h2 id="wakusei-title">惑星脳メシ荘</h2>
-        <p class="series-note">公開準備中。</p>
+        <p class="series-note">準備中。</p>
         <div class="grid">
           <article class="card">
             <div class="thumb" style="background-image:url('./images/thumbs/wakusei/01.webp')"></div>
@@ -177,4 +182,5 @@
   </script>
 </body>
 </html>
+
 
