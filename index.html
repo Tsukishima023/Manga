@@ -4,10 +4,36 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>惑星脳メシ漫画荘 | ギャラリー</title>
+  <div class="card-thumb">
+  <img src="images/thumbs/kekkan-thumb.webp" alt="欠陥品の記憶 サムネイル">
+</div>
   <meta name="description" content="惑星脳メシ漫画荘の連載漫画ギャラリー。欠陥品の記憶／惑星脳メシ荘。">
+  <div class="card-thumb">
+  <img src="images/thumbs/meshisou-thumb.webp" alt="惑星脳メシ荘 サムネイル">
+</div>
   <!-- はんなり明朝 -->
   <link href="https://fonts.googleapis.com/css2?family=Hannari&display=swap" rel="stylesheet">
   <style>
+    /* カード上部のサムネ枠 */
+.card-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;       /* 横長 */
+  border-radius: 12px;
+  overflow: hidden;
+  background:#0d1117;
+  margin-bottom: 12px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.card-thumb img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+@media (max-width: 640px){
+  .card-thumb{ aspect-ratio: 16/10; } /* スマホは少し縦広にして見やすく */
+}
+
     /* --- Gallery layout --- */
 .galleries { padding: 32px 0; }
 .gallery-grid {
