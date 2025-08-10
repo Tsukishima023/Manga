@@ -5,175 +5,208 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>惑星脳メシ漫画荘 | ギャラリー</title>
 
-  <!-- はんなり明朝（Early Access） -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/hannari.css">
+  <!-- フォント（はんなり明朝が無い環境では各種明朝にフォールバック） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
 
   <style>
     :root{
-      --bg:#0a0d10;           /* 黒ベース */
-      --panel:#0f1318;        /* パネル色 */
-      --text:#e6f0ff;         /* 文字（薄い水色寄りの白） */
-      --muted:#97b6d6;        /* 薄い水色 */
-      --line:#1b2430;         /* 枠線 */
-      --accent:#61b2ff;       /* ボタン等の薄い水色 */
-      --accent-weak:#4a86b7;  /* アクセントの弱い色 */
-      --kekkan:#ff9ba0;       /* 欠陥品の記憶の薄い赤 */
+      --bg:#0d0f11;
+      --panel:#13161a;
+      --panel-2:#0f1216;
+      --text:#eaf6ff;
+      --muted:#9fb9c9;
+      --blue:#79caff;
+      --red:#ff7d7d;
+      --line:#22303a;
+      --card-shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:18px;
+      --radius-sm:12px;
+      --gap:20px;
+      --thumb-ratio: 16/9;
+      --thumb-h: clamp(160px, 26vw, 260px); /* PCで大きめ、スマホで自動縮小 */
     }
-    *{ box-sizing:border-box }
-    html,body{ height:100% }
+    *{box-sizing:border-box}
+    html,body{height:100%}
     body{
       margin:0;
       background:var(--bg);
       color:var(--text);
-      font-family: "Hannari", "Yu Mincho", "游明朝", "ヒラギノ明朝 ProN W3", serif;
-      -webkit-font-smoothing:antialiased;
+      font-family: "Noto Serif JP","Hiragino Mincho ProN","Yu Mincho","游明朝",serif;
+      line-height:1.7;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* レイアウト */
-    .wrap{ max-width:1100px; margin:40px auto; padding:0 16px }
-    header{
-      display:flex; align-items:center; gap:14px;
-      margin-bottom:22px;
+    .wrap{
+      max-width: 1180px;
+      margin: 24px auto 80px;
+      padding: 0 16px;
     }
-    header .logo{
-      width:38px; height:38px; border-radius:50%;
-      background:radial-gradient(circle at 35% 35%, #9ed2ff 0 40%, #5ca7ff 40% 60%, transparent 60% 100%);
-      box-shadow:0 0 24px #59a9ff44 inset;
+
+    /* ヘッダー */
+    .topbar{
+      display:flex; align-items:center; gap:16px;
+      margin-bottom: 22px;
     }
-    header h1{
-      margin:0; font-size:26px; letter-spacing:.08em;
+    .logo{
+      width:28px; height:28px; border-radius:50%;
+      background: radial-gradient(#bfe9ff,#79caff 60%,#2a3a49);
+      box-shadow:0 0 20px rgba(121,202,255,.35) inset;
     }
-    .links{ margin-left:auto; display:flex; gap:10px; flex-wrap:wrap }
+    .title{
+      font-size: clamp(20px, 3vw, 28px);
+      letter-spacing:.06em;
+      color:var(--text);
+    }
+
+    /* 連絡先 */
+    .links{ margin-left:auto; display:flex; gap:12px; flex-wrap:wrap;}
     .chip{
-      border:1px solid var(--accent);
-      color:var(--accent);
-      padding:6px 12px; border-radius:12px; text-decoration:none; font-size:14px;
-      transition:.15s ease;
+      padding:8px 14px; border-radius:999px; border:1px solid #2a3a49;
+      color:var(--blue); background:transparent; text-decoration:none; font-size:14px;
+      transition:.2s ease; display:inline-flex; align-items:center; gap:8px;
     }
-    .chip:hover{ background: #123049; }
+    .chip:hover{ background:#111922; border-color:#355268 }
 
-    /* 2カラム（PC）→ 1カラム（スマホ） */
+    /* セクション枠 */
     .grid{
-      display:grid;
+      display:grid; gap:24px;
       grid-template-columns: 1fr 1fr;
-      gap:22px;
     }
-    @media (max-width: 800px){
+    @media (max-width: 860px){
       .grid{ grid-template-columns: 1fr; }
     }
 
-    .column{
-      background:var(--panel);
+    .section{
+      background:linear-gradient(180deg, var(--panel), var(--panel-2));
       border:1px solid var(--line);
-      border-radius:14px;
-      padding:18px;
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      padding: 18px;
     }
-    .column h2{
-      margin:0 0 12px;
-      font-size:20px; letter-spacing:.08em; font-weight:700;
-      border-bottom:1px solid var(--line);
-      padding-bottom:10px;
+    .section h2{
+      font-size: 20px; margin: 2px 6px 14px;
+      font-weight:700; display:flex; align-items:center; gap:10px;
     }
-    /* 欠陥品の記憶の見出しは薄い赤に */
-    .column.kekkan h2{ color:var(--kekkan); border-color:#3a1d22; }
+    .section h2 .line{
+      flex:1; height:1px; background:#22303a;
+    }
+
+    /* 左：欠陥品の記憶（赤アクセント） */
+    .sec-kekkan h2{ color: var(--red); }
+    /* 右：惑星脳メシ荘（青アクセント） */
+    .sec-meshi h2{ color: var(--blue); }
 
     .card{
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:14px;
-      background:#0c1016;
-    }
-    .card h3{
-      margin:10px 0 8px; font-size:18px;
-    }
-    .muted{ color:var(--muted); }
-
-    /* サムネ（横長） */
-    .card-thumb{
-      width:100%;
-      aspect-ratio:16/9;
-      border-radius:10px;
-      overflow:hidden;
-      background:#0d1117;
-      margin-bottom:12px;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
-    }
-    .card-thumb img{
-      width:100%; height:100%; object-fit:cover; display:block;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: #0f141a;
+      padding: 12px;
     }
 
-    .btn-ghost{
-      width:140px; height:40px;
-      border:1px solid var(--accent-weak);
-      color:var(--accent-weak);
-      border-radius:10px; background:transparent;
-      font:inherit; cursor:default;
-      display:flex; align-items:center; justify-content:center;
-      letter-spacing:.1em;
+    /* サムネ領域 */
+    .thumb{
+      position:relative; overflow:hidden;
+      border-radius: calc(var(--radius-sm) - 6px);
+      background:#0b0e12;
+      aspect-ratio: var(--thumb-ratio);
+      max-height: var(--thumb-h);
+      border:1px solid #1c2630;
+    }
+    .thumb img{
+      width:100%; height:100%;
+      object-fit: cover;
+      display:block;
+    }
+    .thumb .label{
+      position:absolute; left:10px; top:10px;
+      background:rgba(0,0,0,.45); padding:6px 10px; border-radius:999px;
+      font-size:12px; color:var(--muted); border:1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(3px);
     }
 
+    /* 作品名・ボタン */
+    .meta{
+      display:flex; align-items:center; gap:12px;
+      margin-top: 14px; flex-wrap:wrap;
+    }
+    .title2{ font-weight:700; font-size: 18px; }
+    .btn{
+      margin-left:auto;
+      padding:10px 16px; border-radius:10px; border:1px dashed #314254;
+      color:#99bcd3; background:#0d131a; font-size:14px;
+      pointer-events:none; opacity:.75;
+    }
+
+    /* フッター */
     footer{
-      margin:28px 0 10px;
-      color:#8ca9c7; font-size:12px; line-height:1.8;
-      text-align:center;
+      margin-top:36px; color:var(--muted); font-size:12.5px; text-align:center;
+      border-top:1px solid var(--line); padding-top:18px;
     }
-    footer .copy{ color:#aac6e5; margin-bottom:10px }
+    footer small{display:block; opacity:.9}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
+    <!-- ヘッダー -->
+    <div class="topbar">
       <div class="logo" aria-hidden="true"></div>
-      <h1>惑星脳メシ漫画荘</h1>
+      <div class="title">惑星脳メシ漫画荘</div>
+
       <nav class="links">
-        <!-- X / YouTube / メール：薄い水色 -->
         <a class="chip" href="https://x.com/wakuseinomeshis" target="_blank" rel="noopener">X</a>
         <a class="chip" href="https://www.youtube.com/@WakuseiNoumeshisou" target="_blank" rel="noopener">YouTube</a>
         <a class="chip" href="mailto:wakuseinoumeshisou@gmail.com">メール</a>
       </nav>
-    </header>
+    </div>
 
-    <main class="grid">
+    <!-- 2カラム ギャラリー -->
+    <div class="grid">
+      <!-- 欠陥品の記憶 -->
+      <section class="section sec-kekkan">
+        <h2>欠陥品の記憶 <span class="line"></span></h2>
 
-      <!-- 左：欠陥品の記憶 -->
-      <section class="column kekkan">
-        <h2>欠陥品の記憶</h2>
-        <p class="muted" style="margin:.2rem 0 1rem">準備中</p>
-
-        <article class="card">
-          <div class="card-thumb">
-            <!-- サムネ画像を置く → images/thumbs/kekkan-thumb.webp -->
-            <img src="images/thumbs/kekkan-thumb.webp" alt="欠陥品の記憶 サムネイル">
+        <div class="card">
+          <div class="thumb">
+            <!-- ← ここがサムネ。画像/ に webp を置いてファイル名を合わせる -->
+            <img src="画像/kekkan-thumb.webp" alt="欠陥品の記憶 サムネイル" loading="lazy" />
+            <span class="label">準備中</span>
           </div>
-          <h3>欠陥品タウン — 第1話</h3>
-          <button class="btn-ghost" disabled>準備中</button>
-        </article>
+
+          <div class="meta">
+            <div class="title2">欠陥品タウン ― 第1話</div>
+            <span class="btn">準備中</span>
+          </div>
+        </div>
       </section>
 
-      <!-- 右：惑星脳メシ荘 -->
-      <section class="column">
-        <h2>惑星脳メシ荘</h2>
-        <p class="muted" style="margin:.2rem 0 1rem">準備中</p>
+      <!-- 惑星脳メシ荘 -->
+      <section class="section sec-meshi">
+        <h2>惑星脳メシ荘 <span class="line"></span></h2>
 
-        <article class="card">
-          <div class="card-thumb">
-            <!-- 仮サムネ：あとで差し替え → images/thumbs/meshisou-thumb.webp -->
-            <img src="images/thumbs/meshisou-thumb.webp" alt="惑星脳メシ荘 サムネイル">
+        <div class="card">
+          <div class="thumb">
+            <img src="画像/meshisou-thumb.webp" alt="惑星脳メシ荘 サムネイル" loading="lazy" />
+            <span class="label">準備中</span>
           </div>
-          <h3>第1話</h3>
-          <button class="btn-ghost" disabled>準備中</button>
-        </article>
-      </section>
 
-    </main>
+          <div class="meta">
+            <div class="title2">第1話</div>
+            <span class="btn">準備中</span>
+          </div>
+        </div>
+      </section>
+    </div>
 
     <footer>
-      <div class="copy">© 2025 惑星脳メシ漫画荘</div>
-      <div>
-        当サイト内の漫画・画像・文章・データ等の著作物を、作者の許可なく複製・転載・配布・二次利用することを禁止します。<br>
+      <small>© 2025 惑星脳メシ漫画荘</small>
+      <small>
+        当サイト内の漫画・画像・文章・データ等の著作物は、作者の許可なく複製・転載・配布・二次利用することを禁じます。<br>
         無断転載・機械学習データへの利用・スクレイピングによる再配布等もお断りします。
-      </div>
+      </small>
     </footer>
   </div>
 </body>
 </html>
+
