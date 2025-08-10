@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>惑星脳メシ荘｜漫画ギャラリー</title>
+
+  <!-- SEO -->
+  <meta name="description" content="オリジナル漫画のギャラリー。読み切り・連作・設定資料をタグで絞り込み。高解像度プレビュー＆キャプション付き。">
+  <link rel="canonical" href="https://example.com/">
+  <!-- OGP -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="惑星脳メシ荘｜漫画ギャラリー">
+  <meta property="og:description" content="オリジナル漫画のギャラリー。作品を高画質で閲覧。">
+  <meta property="og:image" content="images/og-image.jpg">
+  <meta property="og:locale" content="ja_JP">
+  <meta name="theme-color" content="#111">
+
+  <link rel="preload" href="assets/style.css" as="style">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="preload" href="assets/app.js" as="script">
+</head>
+<body>
+  <a class="skip-link" href="#works">本文へスキップ</a>
+
+  <header class="site-header" role="banner">
+    <div class="container">
+      <h1 class="logo" aria-label="惑星脳メシ荘 漫画ギャラリー">
+        <span aria-hidden="true">🪐</span> 惑星脳メシ荘
+      </h1>
+
+      <nav aria-label="サイト">
+        <button id="themeToggle" class="btn-ghost" aria-pressed="false" aria-label="テーマ切替">🌗</button>
+        <ul class="nav">
+          <li><a href="#works">ギャラリー</a></li>
+          <li><a href="#about">作者</a></li>
+          <li><a href="#contact">連絡</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero container" aria-labelledby="heroTitle">
+      <div>
+        <h2 id="heroTitle">漫画ギャラリー</h2>
+        <p class="lead">読み切り・連作・設定資料をひと目で。タグで絞り込み、モーダルで拡大表示できます。</p>
+
+        <form class="filters" role="search" aria-label="作品検索">
+          <label class="sr-only" for="q">検索</label>
+          <input id="q" name="q" type="search" placeholder="作品名・キャラ名で検索" inputmode="search" autocomplete="off" />
+          <div class="tags" role="group" aria-label="タグで絞り込み"></div>
+          <button type="reset" id="clearFilters" class="btn-ghost">クリア</button>
+        </form>
+      </div>
+      <div class="hero-thumb">
+        <picture>
+          <source srcset="images/hero@2x.webp 2x, images/hero.webp 1x" type="image/webp">
+          <img src="images/hero.jpg" alt="最新作のイメージカット" loading="eager" width="880" height="560">
+        </picture>
+      </div>
+    </section>
+
+    <section id="works" class="container" aria-labelledby="worksTitle">
+      <h2 id="worksTitle" class="section-title">作品一覧</h2>
+
+      <ul id="grid" class="grid" aria-live="polite" aria-busy="false"></ul>
+
+      <template id="cardTemplate">
+        <li class="card">
+          <button class="card-link" data-index="" aria-haspopup="dialog" aria-controls="modal" aria-label="">
+            <figure>
+              <picture></picture>
+              <img alt="" loading="lazy" width="640" height="900">
+              <figcaption>
+                <strong class="title"></strong>
+                <span class="meta"></span>
+              </figcaption>
+            </figure>
+          </button>
+        </li>
+      </template>
+
+      <p id="emptyMsg" class="empty" hidden>該当する作品が見つかりませんでした。</p>
+    </section>
+
+    <section id="about" class="container narrow" aria-labelledby="aboutTitle">
+      <h2 id="aboutTitle" class="section-title">作者</h2>
+      <p>
+        ここではオリジナル漫画を公開しています。重たいテーマも優しい手触りで。<br>
+        画面写真の転載はご遠慮ください。感想はいつでも歓迎です。
+      </p>
+    </section>
+
+    <section id="contact" class="container narrow" aria-labelledby="contactTitle">
+      <h2 id="contactTitle" class="section-title">連絡</h2>
+      <ul class="contact">
+        <li><a href="mailto:you@example.com" rel="noopener">メール</a></li>
+        <li><a href="https://x.com/yourhandle" target="_blank" rel="noopener">X（Twitter）</a></li>
+        <li><a href="https://www.youtube.com/@yourchannel" target="_blank" rel="noopener">YouTube</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <dialog id="modal" class="modal" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+    <div class="modal-inner">
+      <header class="modal-header">
+        <h3 id="modalTitle"></h3>
+        <button class="btn-ghost" id="closeModal" aria-label="閉じる (Esc)">✕</button>
+      </header>
+
+      <div class="modal-body">
+        <figure>
+          <picture id="modalPicture">
+            <img id="modalImg" alt="" width="1200" height="1680">
+          </picture>
+          <figcaption id="modalDesc" class="caption"></figcaption>
+        </figure>
+      </div>
+
+      <footer class="modal-footer">
+        <button class="btn" id="prevBtn" aria-label="前の作品へ (←)">←</button>
+        <button class="btn" id="nextBtn" aria-label="次の作品へ (→)">→</button>
+        <a class="btn-outline" id="viewWork" target="_blank" rel="noopener">作品ページ</a>
+      </footer>
+    </div>
+  </dialog>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© <span id="year"></span> 惑星脳メシ荘</small>
+    </div>
+  </footer>
+
+  <script>
+  window.WORKS = [
+    {
+      id: "kekkan-01",
+      title: "欠陥品の記憶 #1",
+      year: 2025,
+      tags: ["連作","シリアス","SF"],
+      thumb: "images/kekkan-01_640.jpg",
+      thumbWebp: "images/kekkan-01_640.webp",
+      full: "images/kekkan-01_1200.jpg",
+      fullWebp: "images/kekkan-01_1200.webp",
+      alt: "欠陥品の記憶 第1話の表紙イラスト",
+      caption: "博士、ナズナ、ミズキが交差する序章。",
+      link: "#"
+    },
+    {
+      id: "meshisou-oneshot",
+      title: "惑星脳メシ荘（読切）",
+      year: 2024,
+      tags: ["読み切り","日常","群像"],
+      thumb: "images/meshi-oneshot_640.jpg",
+      thumbWebp: "images/meshi-oneshot_640.webp",
+      full: "images/meshi-oneshot_1200.jpg",
+      fullWebp: "images/meshi-oneshot_1200.webp",
+      alt: "惑星脳メシ荘 読切のキービジュアル",
+      caption: "ごはんと宇宙と、やわらかな夜。",
+      link: "#"
+    },
+    {
+      id: "nazuna-sheet",
+      title: "ナズナ 設定資料",
+      year: 2025,
+      tags: ["設定資料","キャラクター"],
+      thumb: "images/nazuna_640.jpg",
+      thumbWebp: "images/nazuna_640.webp",
+      full: "images/nazuna_1200.jpg",
+      fullWebp: "images/nazuna_1200.webp",
+      alt: "ナズナの三面図と表情集",
+      caption: "一人称は「ぼく」。お父さんを守るための設計。",
+      link: "#"
+    }
+  ];
+  </script>
+
+  <script src="assets/app.js" defer></script>
+</body>
+</html>
