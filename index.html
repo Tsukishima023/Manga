@@ -273,5 +273,53 @@ a.contact-link:hover { text-decoration: underline; }
     document.getElementById('y').textContent = new Date().getFullYear();
   </script>
 </body>
+  <!-- === Galleries Block (paste right before </body>) =================== -->
+<style>
+/* --- Gallery layout --- */
+.galleries { padding: 32px 0; }
+.gallery-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px; }
+@media (max-width:768px){ .gallery-grid{ grid-template-columns:1fr; } }
+
+.gallery-card{ background:#0b0d10; border:1px solid #1e2630; border-radius:14px; padding:14px; }
+.thumb{ width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:8px; display:block; }
+.title{ margin:12px 2px 10px; font-size:1.15rem; line-height:1.4; }
+
+/* 欠陥品の記憶：薄赤アクセント */
+.series-kekkan{ color:#ff6b6b; border-bottom:1px solid #ff6b6b55; padding-bottom:2px; }
+
+/* ボタン */
+.actions{ margin-top:6px; display:flex; gap:10px; }
+.btn{ padding:8px 14px; border-radius:8px; font-size:.95rem; border:1px solid #2b3a47;
+      background:#12161b; color:#a8d8ff; text-decoration:none; }
+.btn:hover{ background:#151b21; }
+.btn-primary{ border-color:#3d5a6e; box-shadow:0 0 0 1px #3d5a6e inset; }
+.btn-disabled{ opacity:.55; cursor:not-allowed; background:#0f1317; }
+
+/* 連絡先（薄い水色） */
+a.contact-link{ color:#a8d8ff; } a.contact-link:hover{ text-decoration:underline; }
+</style>
+
+<section class="galleries" id="galleries">
+  <div class="gallery-grid">
+    <!-- 欠陥品の記憶 -->
+    <article class="gallery-card">
+      <img src="画像/欠陥品の記憶webサムネ.webp" alt="欠陥品の記憶 サムネイル" class="thumb">
+      <h3 class="title"><span class="series series-kekkan">欠陥品の記憶</span> ギャラリー</h3>
+      <div class="actions">
+        <!-- 読む先のURLに差し替えてね -->
+        <a href="./kekkan/index.html" class="btn btn-primary">読む</a>
+      </div>
+    </article>
+
+    <!-- 惑星脳メシ荘 -->
+    <article class="gallery-card">
+      <img src="画像/wakusei-placeholder.webp" alt="惑星脳メシ荘 サムネイル" class="thumb">
+      <h3 class="title">惑星脳メシ荘 ギャラリー</h3>
+      <div class="actions"><button class="btn btn-disabled" disabled>準備中</button></div>
+    </article>
+  </div>
+</section>
+<!-- === /Galleries Block ============================================== -->
+
 </html>
 
