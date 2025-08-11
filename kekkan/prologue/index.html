@@ -7,15 +7,10 @@
   a{color:#9fc9ff;text-decoration:none}
   main{max-width:1100px;margin:0 auto;padding:10px 12px 60px}
   img{display:block;width:100%;height:auto;margin:0 0 16px;background:#0f1419;border:1px solid #2a3138;border-radius:8px}
-  .nav{display:flex;gap:10px;flex-wrap:wrap}
-  .chip{border:1px solid #324356;padding:6px 10px;border-radius:10px}
 </style>
 <header>
-  <div class="nav">
-    <strong>欠陥品の記憶 — プロローグ</strong>
-    <span style="flex:1"></span>
-    <a class="chip" href="/Manga/kekkan/">各話一覧へ</a>
-  </div>
+  <strong>欠陥品の記憶 — プロローグ</strong>　
+  <a href="/Manga/kekkan/">← 各話一覧へ</a>
 </header>
 <main id="v"><p>読み込み中…</p></main>
 <script>
@@ -26,13 +21,16 @@
   try{
     const r = await fetch(man, {cache:'no-store'});
     if(!r.ok) throw new Error('manifest '+r.status);
-    const files = JSON.parse((await r.text()).replace(/^\uFEFF/,''));
-    v.innerHTML='';
-    for(const name of files){
+    // BOM除去してJSON化
+    const files = JSON.parse((await r.text()).replace(/^\uFEFF/, ''));
+    // ★ 並べ替えしない。manifestの順序のまま使う
+    const list = files.filter(n=>/\.(png|jpe?g|webp)$/i.test(n));
+    v.innerHTML = '';
+    for(const name of list){
       const url = new URL('./'+name, base);
       const img = document.createElement('img');
       img.loading='lazy'; img.decoding='async';
-      img.src = url.toString()+'?v='+Date.now();
+      img.src = url.toString()+'?v='+Date.now(); // キャッシュ回避
       v.appendChild(img);
     }
   }catch(e){
