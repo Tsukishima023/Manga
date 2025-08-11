@@ -3,9 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>惑星脳メシ漫画荘</title>
+  <title>惑星脳メシ漫画荘 | ギャラリー</title>
 
-  <!-- フォント（はんなり明朝が無い環境では各種明朝にフォールバック） -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
@@ -25,7 +24,7 @@
       --radius-sm:12px;
       --gap:20px;
       --thumb-ratio: 16/9;
-      --thumb-h: clamp(160px, 26vw, 260px); /* PCで大きめ、スマホで自動縮小 */
+      --thumb-h: clamp(160px, 26vw, 260px);
     }
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -37,14 +36,11 @@
       line-height:1.7;
       -webkit-font-smoothing: antialiased;
     }
-
     .wrap{
       max-width: 1180px;
       margin: 24px auto 80px;
       padding: 0 16px;
     }
-
-    /* ヘッダー */
     .topbar{
       display:flex; align-items:center; gap:16px;
       margin-bottom: 22px;
@@ -59,8 +55,6 @@
       letter-spacing:.06em;
       color:var(--text);
     }
-
-    /* 連絡先 */
     .links{ margin-left:auto; display:flex; gap:12px; flex-wrap:wrap;}
     .chip{
       padding:8px 14px; border-radius:999px; border:1px solid #2a3a49;
@@ -68,8 +62,6 @@
       transition:.2s ease; display:inline-flex; align-items:center; gap:8px;
     }
     .chip:hover{ background:#111922; border-color:#355268 }
-
-    /* セクション枠 */
     .grid{
       display:grid; gap:24px;
       grid-template-columns: 1fr 1fr;
@@ -77,7 +69,6 @@
     @media (max-width: 860px){
       .grid{ grid-template-columns: 1fr; }
     }
-
     .section{
       background:linear-gradient(180deg, var(--panel), var(--panel-2));
       border:1px solid var(--line);
@@ -92,20 +83,14 @@
     .section h2 .line{
       flex:1; height:1px; background:#22303a;
     }
-
-    /* 左：欠陥品の記憶（赤アクセント） */
     .sec-kekkan h2{ color: var(--red); }
-    /* 右：惑星脳メシ荘（青アクセント） */
     .sec-meshi h2{ color: var(--blue); }
-
     .card{
       border: 1px solid var(--line);
       border-radius: var(--radius-sm);
       background: #0f141a;
       padding: 12px;
     }
-
-    /* サムネ領域 */
     .thumb{
       position:relative; overflow:hidden;
       border-radius: calc(var(--radius-sm) - 6px);
@@ -125,8 +110,6 @@
       font-size:12px; color:var(--muted); border:1px solid rgba(255,255,255,.08);
       backdrop-filter: blur(3px);
     }
-
-    /* 作品名・ボタン */
     .meta{
       display:flex; align-items:center; gap:12px;
       margin-top: 14px; flex-wrap:wrap;
@@ -136,29 +119,18 @@
       margin-left:auto;
       padding:10px 16px; border-radius:10px; border:1px dashed #314254;
       color:#99bcd3; background:#0d131a; font-size:14px;
-      /* 変更後 */
-.btn{
-  margin-left:auto;
-  padding:10px 16px;
-  border-radius:10px;
-  border:1px dashed #314254;
-  color:#99bcd3;
-  background:#0d131a;
-  font-size:14px;
-  /* ← pointer-events は付けない！ */
-}
-.btn:hover{ background:#101823 }
-
-/* 準備中のときだけ無効化 */
-.btn.disabled{
-  opacity:.75;
-  pointer-events:none;
-  cursor:default;
-}
- opacity:.75;
+      text-decoration:none;
+      display:inline-block;
     }
-
-    /* フッター */
+    .btn:hover{
+      background:#101823;
+      border-color:#446;
+    }
+    .btn.disabled{
+      opacity:.75;
+      pointer-events:none;
+      cursor:default;
+    }
     footer{
       margin-top:36px; color:var(--muted); font-size:12.5px; text-align:center;
       border-top:1px solid var(--line); padding-top:18px;
@@ -168,11 +140,9 @@
 </head>
 <body>
   <div class="wrap">
-    <!-- ヘッダー -->
     <div class="topbar">
       <div class="logo" aria-hidden="true"></div>
       <div class="title">惑星脳メシ漫画荘</div>
-
       <nav class="links">
         <a class="chip" href="https://x.com/wakuseinomeshis" target="_blank" rel="noopener">X</a>
         <a class="chip" href="https://www.youtube.com/@WakuseiNoumeshisou" target="_blank" rel="noopener">YouTube</a>
@@ -180,39 +150,29 @@
       </nav>
     </div>
 
-    <!-- 2カラム ギャラリー -->
     <div class="grid">
-      <!-- 欠陥品の記憶 -->
       <section class="section sec-kekkan">
         <h2>欠陥品の記憶 <span class="line"></span></h2>
-
         <div class="card">
           <div class="thumb">
-           <!-- 欠陥品の記憶サムネ -->
-<img src="images/kekkan-thumb.jpg" alt="欠陥品の記憶 サムネイル" loading="lazy" style="width:100%; height:auto; border-radius:8px;">
+            <img src="images/kekkan-thumb.jpg" alt="欠陥品の記憶 サムネイル" loading="lazy" />
           </div>
-
           <div class="meta">
             <div class="title2">欠陥品タウン ― 第1話</div>
-           <a class="btn" href="kekkan/01/index.html">読む</a>
+            <a class="btn" href="kekkan/01/index.html">読む</a>
           </div>
         </div>
       </section>
 
-      <!-- 惑星脳メシ荘 -->
       <section class="section sec-meshi">
         <h2>惑星脳メシ荘 <span class="line"></span></h2>
-
         <div class="card">
           <div class="thumb">
-           <!-- 惑星脳メシ荘サムネ -->
-<img src="images/meshisou-thumb.jpg" alt="惑星脳メシ荘 サムネイル" loading="lazy" style="width:100%; height:auto; border-radius:8px;">
-            <span class="label">準備中</span>
+            <img src="images/meshisou-thumb.jpg" alt="惑星脳メシ荘 サムネイル" loading="lazy" />
           </div>
-
           <div class="meta">
             <div class="title2">第1話</div>
-            <span class="btn">準備中</span>
+            <span class="btn disabled">準備中</span>
           </div>
         </div>
       </section>
@@ -228,4 +188,5 @@
   </div>
 </body>
 </html>
+
 
