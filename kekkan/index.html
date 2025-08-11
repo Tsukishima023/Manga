@@ -18,15 +18,13 @@
   @media (max-width:820px){.grid{grid-template-columns:1fr}}
 
   .card{border:1px solid var(--line);border-radius:14px;background:#0f1419;overflow:hidden}
-  /* サムネ枠：ここで高さを作る（必ず表示） */
   .thumb{
     display:block;
     width:100%;
-    aspect-ratio:16/9;                /* 16:9 で固定 */
+    aspect-ratio:16/9;
     background:#0b0f14 center/cover no-repeat;
     border-bottom:1px solid var(--line);
   }
-  /* aspect-ratio 非対応ブラウザのフォールバック */
   @supports not (aspect-ratio: 1 / 1) {
     .thumb{ position:relative; }
     .thumb::before{ content:""; display:block; padding-top:56.25%; }
@@ -49,7 +47,7 @@
     <section class="grid">
       <!-- 第1話 -->
       <article class="card">
-        <!-- サムネ画像は /Manga/images/ 配下にある実ファイル名に合わせてね -->
+        <!-- ★サムネは実ファイル名に合わせて変更（.webp/.jpg どちらでもOK） -->
         <a class="thumb" style="background-image:url('/Manga/images/kekkan_0001_1200.webp')" href="/Manga/kekkan/01/"></a>
         <div class="meta">
           <h2 class="title">欠陥品タウン</h2>
@@ -57,7 +55,7 @@
         </div>
       </article>
 
-      <!-- 第2話（公開済みならサムネを差し替えてOK。未公開ならこのブロックは消してもOK） -->
+      <!-- 第2話 -->
       <article class="card">
         <a class="thumb" style="background-image:url('/Manga/images/sakanai_0001.jpg')" href="/Manga/kekkan/02/"></a>
         <div class="meta">
@@ -65,7 +63,17 @@
           <a class="btn" href="/Manga/kekkan/02/">読む</a>
         </div>
       </article>
+
+      <!-- 第3話 -->
+      <article class="card">
+        <a class="thumb" style="background-image:url('/Manga/images/aino_0001.jpg.')" href="/Manga/kekkan/03/"></a>
+        <div class="meta">
+          <h2 class="title">咲かない花、愛の鉄くず</h2>
+          <a class="btn" href="/Manga/kekkan/03/">読む</a>
+        </div>
+      </article>
     </section>
   </div>
 </body>
 </html>
+
