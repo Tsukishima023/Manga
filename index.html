@@ -136,7 +136,26 @@
       margin-left:auto;
       padding:10px 16px; border-radius:10px; border:1px dashed #314254;
       color:#99bcd3; background:#0d131a; font-size:14px;
-      pointer-events:none; opacity:.75;
+      /* 変更後 */
+.btn{
+  margin-left:auto;
+  padding:10px 16px;
+  border-radius:10px;
+  border:1px dashed #314254;
+  color:#99bcd3;
+  background:#0d131a;
+  font-size:14px;
+  /* ← pointer-events は付けない！ */
+}
+.btn:hover{ background:#101823 }
+
+/* 準備中のときだけ無効化 */
+.btn.disabled{
+  opacity:.75;
+  pointer-events:none;
+  cursor:default;
+}
+ opacity:.75;
     }
 
     /* フッター */
