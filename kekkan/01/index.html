@@ -1,71 +1,36 @@
-<!doctype html>
-<html lang="ja">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>欠陥品の記憶 | 各話一覧</title>
+<!doctype html><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>欠陥品の記憶｜第1話</title>
 <style>
-  :root{ --bg:#0b0f12; --panel:#12181e; --line:#2a3138; --text:#eaf6ff; --sub:#9fc9ff; --accent:#ff7d7d; }
-  *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Serif JP","Yu Mincho","Hiragino Mincho ProN",serif}
-  .wrap{max-width:1100px;margin:20px auto 60px;padding:0 16px}
-  header{display:flex;align-items:center;gap:12px;margin:10px 0 18px}
-  h1{margin:0;font-size:22px;color:var(--accent)}
-  a.home{margin-left:auto;color:var(--sub);text-decoration:none;border:1px solid #324356;padding:6px 10px;border-radius:10px}
-  a.home:hover{background:#0f141a}
-  .grid{display:grid;gap:18px;grid-template-columns:repeat(2,1fr)}
-  @media (max-width:820px){.grid{grid-template-columns:1fr}}
-  .card{border:1px solid var(--line);border-radius:14px;background:#0f1419;overflow:hidden;display:flex;flex-direction:column}
-  .thumb{aspect-ratio:16/9;background:#0b0f14 center/cover no-repeat}
-  .meta{padding:12px}
-  .title{font-weight:700;margin:0 0 8px}
-  .info{color:#b3c9db;font-size:.95rem;margin:0 0 12px}
-  .actions{display:flex;gap:10px}
-  .btn{flex:1;text-align:center;border:1px solid #3b4d60;padding:10px 12px;border-radius:10px;color:var(--sub);text-decoration:none}
-  .btn:hover{background:#0f1822}
-  .btn.disabled{opacity:.6;pointer-events:none}
-  footer{margin:26px 0 40px;color:#9fc9ff;text-align:center;font-size:.9rem}
+  body{margin:0;background:#0b0f12;color:#eaf6ff;font-family:"Noto Serif JP","Yu Mincho",serif}
+  header{position:sticky;top:0;background:#0d1319;border-bottom:1px solid #2a3138;padding:10px 12px}
+  a{color:#9fc9ff;text-decoration:none}
+  main{max-width:1100px;margin:0 auto;padding:10px 12px 60px}
+  img{display:block;width:100%;height:auto;margin:0 0 16px;background:#0f1419;border:1px solid #2a3138;border-radius:8px}
 </style>
-</head>
-<body>
-  <div class="wrap">
-    <header>
-      <h1>欠陥品の記憶 — 各話一覧</h1>
-      <a class="home" href="../index.html">← トップへ</a>
-    </header>
-
-    <section class="grid" id="list"></section>
-
-    <footer>© 惑星脳メシ漫画荘</footer>
-  </div>
-
+<header><strong>欠陥品の記憶 — 第1話</strong>　
+  <a href="/Manga/kekkan/">← 各話一覧へ</a>
+</header>
+<main id="v"><p>読み込み中…</p></main>
 <script>
-/* ここに各話データを追加していくだけ */
-const episodes = [
-  {
-    id: "01",
-    title: "欠陥品タウン — 第1話",
-    thumb: "samune_1200.webp, // 置けるならシリーズ用サムネ/任意の画像
-    url: "./01/index.html",
-    ready: true   // 公開済みなら true、準備中なら false
-  },
-  // 2話以降の例：
-  // { id:"02", title:"咲かない花の子供たち", thumb:"../images/kekkan-02.jpg", url:"./02/index.html", ready:false },
-];
-
-const container = document.getElementById('list');
-container.innerHTML = episodes.map(ep => `
-  <article class="card">
-    <a class="thumb" style="background-image:url('${ep.thumb || ''}')" href="${ep.ready ? ep.url : '#'}" aria-label="${ep.title}"></a>
-    <div class="meta">
-      <h2 class="title">${ep.title}</h2>
-      <p class="info">第${parseInt(ep.id,10)}話</p>
-      <div class="actions">
-        ${ep.ready ? `<a class="btn" href="${ep.url}">読む</a>` : `<span class="btn disabled">準備中</span>`}
-      </div>
-    </div>
-  </article>
-`).join('');
+(async()=>{
+  const base = location.href;
+  const man  = new URL('./manifest.json', base);
+  const v    = document.getElementById('v');
+  try{
+    const r = await fetch(man, {cache:'no-store'});
+    if(!r.ok) throw new Error('manifest '+r.status);
+    const files = JSON.parse((await r.text()).replace(/^\uFEFF/,''));
+    v.innerHTML='';
+    for(const name of files){
+      const url = new URL('./'+name, base);
+      const img = document.createElement('img');
+      img.loading='lazy'; img.decoding='async';
+      img.src = url.toString()+'?v='+Date.now();
+      v.appendChild(img);
+    }
+  }catch(e){
+    v.innerHTML = '<p>読み込み失敗。/kekkan/01/ に index.html・manifest.json・画像が並んでいるか確認してね。</p><pre>'+e+'</pre>';
+  }
+})();
 </script>
-</body>
-</html>
-
