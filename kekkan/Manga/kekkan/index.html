@@ -1,1 +1,46 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>欠陥品の記憶 | 各話一覧</title>
+<style>
+  :root{ --bg:#0b0f12; --panel:#12181e; --line:#2a3138; --text:#eaf6ff; --sub:#9fc9ff; --accent:#ff7d7d; }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Serif JP","Yu Mincho","Hiragino Mincho ProN",serif}
+  .wrap{max-width:1100px;margin:20px auto 60px;padding:0 16px}
+  header{display:flex;align-items:center;gap:12px;margin:10px 0 18px}
+  h1{margin:0;font-size:22px;color:var(--accent)}
+  a.home{margin-left:auto;color:var(--sub);text-decoration:none;border:1px solid #324356;padding:6px 10px;border-radius:10px}
+  a.home:hover{background:#0f141a}
+  .grid{display:grid;gap:18px;grid-template-columns:repeat(2,1fr)}
+  @media (max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{border:1px solid var(--line);border-radius:14px;background:#0f1419;overflow:hidden}
+  .thumb{display:block;aspect-ratio:16/9;background:#0b0f14 center/cover no-repeat}
+  .meta{padding:12px}
+  .title{font-weight:700;margin:0 0 8px}
+  .info{color:#b3c9db;font-size:.95rem;margin:0 0 12px}
+  .btn{display:inline-block;border:1px solid #3b4d60;padding:10px 12px;border-radius:10px;color:var(--sub);text-decoration:none}
+  .btn:hover{background:#0f1822}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>欠陥品の記憶 — 各話一覧</h1>
+      <a class="home" href="/Manga/">← トップへ</a>
+    </header>
 
+    <section class="grid">
+      <article class="card">
+        <a class="thumb" style="background-image:url('../images/kekkan_0001_1200.webp')" href="./01/"></a>
+        <div class="meta">
+          <h2 class="title">欠陥品タウン</h2>
+          <p class="info">第1話</p>
+          <a class="btn" href="./01/">読む</a>
+        </div>
+      </article>
+    </section>
+  </div>
+</body>
+</html>
