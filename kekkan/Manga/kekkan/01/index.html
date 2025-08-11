@@ -1,1 +1,62 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>欠陥品の記憶｜第1話</title>
+<style>
+  :root{ --bg:#0b0f12; --text:#eaf6ff; --line:#2a3138; }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Serif JP","Yu Mincho","Hiragino Mincho ProN",serif}
+  header{position:sticky;top:0;background:#0d1319;border-bottom:1px solid var(--line);padding:10px 12px;z-index:10}
+  a{color:#9fc9ff;text-decoration:none}
+  .wrap{max-width:1100px;margin:0 auto;padding:10px 12px 60px}
+  .page{display:block;margin:0 auto 16px;max-width:100%;height:auto;background:#0f1419;border:1px solid var(--line);border-radius:8px}
+  .topbar{display:flex;gap:12px;align-items:center}
+  .topbar .home{margin-left:auto;border:1px solid #324356;padding:6px 10px;border-radius:10px}
+</style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <strong>欠陥品の記憶 — 第1話</strong>
+      <a class="home" href="/Manga/kekkan/">← 各話一覧へ</a>
+    </div>
+  </header>
+
+  <main class="wrap" id="viewer" aria-live="polite">
+    <p>読み込み中…</p>
+  </main>
+
+<script>
+(async () => {
+  const viewer = document.getElementById('viewer');
+  const manifestUrl = new URL('manifest.json', location.href); // 同じフォルダを基準
+  try {
+    const res = await fetch(manifestUrl.toString());
+    if (!res.ok) throw new Error(`manifest fetch failed ${res.status} ${res.statusText} (${manifestUrl})`);
+    const files = await res.json();
+    viewer.innerHTML = '';
+
+    for (const name of files) {
+      const imgUrl = new URL(name, location.href); // 同じフォルダの画像
+      const img = document.createElement('img');
+      img.className = 'page';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = '';
+      img.src = imgUrl.toString();
+      viewer.appendChild(img);
+    }
+  } catch (err) {
+    console.error(err);
+    viewer.innerHTML = `
+      <p>読み込みに失敗しました。ファイル配置と名前を確認してください。</p>
+      <pre style="white-space:pre-wrap;background:#111722;border:1px solid #2a3138;padding:10px;border-radius:8px">${String(err)}</pre>
+    `;
+  }
+})();
+</script>
+</body>
+</html>
 
