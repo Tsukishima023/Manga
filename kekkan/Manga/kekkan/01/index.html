@@ -1,115 +1,36 @@
-<!doctype html>
-<html lang="ja">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>欠陥品の記憶｜第1話（診断）</title>
+<!doctype html><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>欠陥品の記憶｜第1話</title>
 <style>
   body{margin:0;background:#0b0f12;color:#eaf6ff;font-family:"Noto Serif JP","Yu Mincho",serif}
-  header{position:sticky;top:0;z-index:10;background:#0d1319;border-bottom:1px solid #2a3138;padding:10px 12px}
+  main{max-width:1100px;margin:0 auto;padding:10px 12px 60px}
+  img{display:block;width:100%;height:auto;margin:0 0 16px;background:#0f1419;border:1px solid #2a3138;border-radius:8px}
+  header{position:sticky;top:0;background:#0d1319;border-bottom:1px solid #2a3138;padding:10px 12px}
   a{color:#9fc9ff;text-decoration:none}
-  .wrap{max-width:1100px;margin:0 auto;padding:10px 12px 60px}
-  .box{background:#0f1419;border:1px solid #2a3138;border-radius:10px;padding:12px;margin:10px 0}
-  .fail{color:#ff9d9d}
-  .ok{color:#8ff3a3}
-  .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.92rem;white-space:pre-wrap;word-break:break-all}
-  img.page{display:block;margin:8px auto 16px;max-width:100%;height:auto;background:#0f1419;border:1px solid #2a3138;border-radius:8px}
-  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .pill{border:1px solid #324356;padding:4px 8px;border-radius:999px}
-  .small{font-size:.9rem;opacity:.9}
 </style>
-</head>
-<body>
-<header class="wrap">
-  <div class="row">
-    <strong>欠陥品の記憶 — 第1話（診断モード）</strong>
-    <a class="pill" href="/Manga/kekkan/">← 各話一覧へ</a>
-  </div>
+<header><strong>欠陥品の記憶 — 第1話</strong>　
+  <a href="/Manga/kekkan/">← 各話一覧へ</a>
 </header>
-
-<main class="wrap" id="app">
-  <div class="box mono small">読み込み中…</div>
-</main>
-
+<main id="v"><p>読み込み中…</p></main>
 <script>
-(async () => {
-  const app = document.getElementById('app');
-  const here = location.href;
-  const manifestUrl = new URL('manifest.json', here);
-  const log = (...a)=>console.log('[diag]', ...a);
-
-  // fetch with no-store & BOM-safe JSON parse
-  async function fetchJsonBOMSafe(url){
-    const res = await fetch(url.toString(), { cache:'no-store' });
-    if(!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText} for ${url}`);
-    const text = await res.text();
-    const cleaned = text.replace(/^\uFEFF/, ''); // BOM除去
-    try{
-      return JSON.parse(cleaned);
-    }catch(e){
-      e.message = `JSON parse error for ${url}\n` + e.message + `\n\nRaw head:\n` + cleaned.slice(0,200);
-      throw e;
-    }
-  }
-
+(async()=>{
+  const base = location.href;                      // いまの /kekkan/01/ を基準に
+  const man  = new URL('./manifest.json', base);   // 必ず同フォルダの manifest を見る
+  const v    = document.getElementById('v');
   try{
-    const head = document.createElement('div');
-    head.className = 'box mono';
-    head.textContent = `manifest: ${manifestUrl}`;
-    app.innerHTML = '';
-    app.appendChild(head);
-
-    let files = await fetchJsonBOMSafe(manifestUrl);
-    if(!Array.isArray(files)) throw new Error('manifest is not an array');
-
-    // 表示：manifestの中身
-    const listBox = document.createElement('div');
-    listBox.className = 'box mono small';
-    listBox.innerHTML = `manifest entries (${files.length}):\n` + files.map(f=>`- ${f}`).join('\n');
-    app.appendChild(listBox);
-
-    // 各画像を実URLで検証＆描画
+    const r = await fetch(man.toString(), {cache:'no-store'});
+    if(!r.ok) throw new Error('manifest '+r.status);
+    const txt = await r.text();                    // BOM対策
+    const files = JSON.parse(txt.replace(/^\uFEFF/, ''));
+    v.innerHTML = '';
     for(const name of files){
-      const url = new URL(name, here); // 必ず「/kekkan/01/ + name」
-
-      const row = document.createElement('div');
-      row.className = 'box mono';
-      row.innerHTML = `<div class="row">
-        <span>画像URL:</span>
-        <a href="${url}" target="_blank" rel="noopener">${url}</a>
-      </div>
-      <div class="small">読み込みテスト：<span id="st">…</span></div>`;
-      app.appendChild(row);
-
+      const url = new URL('./'+name, base).toString();  // 同フォルダの 画像名 をそのまま
       const img = document.createElement('img');
-      img.className = 'page';
-      img.alt = name;
-
-      const st = row.querySelector('#st');
-      let ok = false;
-      await new Promise(resolve=>{
-        img.onload = ()=>{ ok = true; st.textContent = 'OK'; st.className='ok'; resolve(); };
-        img.onerror = ()=>{ st.textContent = 'NG（404/名前違いの可能性）'; st.className='fail'; resolve(); };
-        // キャッシュ回避用クエリ付与
-        img.src = url.toString() + (url.search ? '&' : '?') + 'v=' + Date.now();
-      });
-      app.appendChild(img);
-
-      if(!ok){
-        const hint = document.createElement('div');
-        hint.className = 'box mono small fail';
-        hint.textContent =
-          'ヒント: 上の画像URLを別タブで開いて 404 なら、/kekkan/01/ にその名前のファイルが無いか、拡張子・大文字小文字が違います。';
-        app.appendChild(hint);
-      }
+      img.loading='lazy'; img.decoding='async'; img.src = url + '?v=' + Date.now(); // キャッシュ回避
+      v.appendChild(img);
     }
-  }catch(err){
-    const ebox = document.createElement('div');
-    ebox.className = 'box mono fail';
-    ebox.textContent = '読み込みエラー: ' + String(err);
-    app.appendChild(ebox);
+  }catch(e){
+    v.innerHTML = '<p>読み込み失敗。/kekkan/01/ に index.html・manifest.json・画像が並んでいるか確認してね。</p><pre>'+e+'</pre>';
   }
 })();
 </script>
-</body>
-</html>
