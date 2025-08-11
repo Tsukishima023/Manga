@@ -20,7 +20,7 @@
   <header>
     <div class="topbar">
       <strong>欠陥品の記憶 — 第1話</strong>
-      <a class="home" href="/Manga/">← トップへ</a>
+      <a class="home" href="/Manga/kekkan/">← 各話一覧へ</a>
     </div>
   </header>
 
@@ -30,34 +30,30 @@
 
 <script>
 (async () => {
-  // いまのディレクトリ（/Manga/kekkan/01/ など）を安全に算出
-  const baseDir = location.pathname.replace(/[^/]+$/, '');
-  const cacheBust = '?v=' + Date.now(); // キャッシュ回避
-
-  // manifest.json を取得（同じフォルダにある想定）
-  const manifestUrl = baseDir + 'manifest.json' + cacheBust;
-
+  const viewer = document.getElementById('viewer');
+  const manifestUrl = new URL('manifest.json', location.href); // 同じフォルダを基準
   try {
-    const res = await fetch(manifestUrl);
-    if (!res.ok) throw new Error('manifest fetch failed: ' + res.status);
+    const res = await fetch(manifestUrl.toString());
+    if (!res.ok) throw new Error(`manifest fetch failed ${res.status} ${res.statusText} (${manifestUrl})`);
     const files = await res.json();
+    viewer.innerHTML = '';
 
-    const root = document.getElementById('viewer');
-    root.innerHTML = '';
-
-    // 画像を順番に並べる（同じフォルダにある .webp を読み込む）
     for (const name of files) {
+      const imgUrl = new URL(name, location.href); // 同じフォルダの画像
       const img = document.createElement('img');
       img.className = 'page';
       img.loading = 'lazy';
       img.decoding = 'async';
       img.alt = '';
-      img.src = baseDir + name; // ここがポイント：必ず現在地 + ファイル名
-      root.appendChild(img);
+      img.src = imgUrl.toString();
+      viewer.appendChild(img);
     }
-  } catch (e) {
-    console.error(e);
-    document.getElementById('viewer').textContent = '読み込みに失敗しました。ファイル配置と名前を確認してください。';
+  } catch (err) {
+    console.error(err);
+    viewer.innerHTML = `
+      <p>読み込みに失敗しました。ファイル配置と名前を確認してください。</p>
+      <pre style="white-space:pre-wrap;background:#111722;border:1px solid #2a3138;padding:10px;border-radius:8px">${String(err)}</pre>
+    `;
   }
 })();
 </script>
