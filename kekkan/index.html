@@ -13,29 +13,25 @@
   h1{margin:0;font-size:22px;color:var(--accent)}
   a.home{margin-left:auto;color:var(--sub);text-decoration:none;border:1px solid #324356;padding:6px 10px;border-radius:10px}
   a.home:hover{background:#0f141a}
+
   .grid{display:grid;gap:18px;grid-template-columns:repeat(2,1fr)}
   @media (max-width:820px){.grid{grid-template-columns:1fr}}
-  .card{border:1px solid var(--line);border-radius:14px;background:#0f1419;overflow:hidden}
- /* これでサムネの“枠”に確実に高さがつく */
-.thumb{
-  display:block;
-  width:100%;
-  aspect-ratio:16/9;             /* 対応ブラウザ用 */
-  background:#0b0f14 center/cover no-repeat;
-  border-radius:12px;
-  border:1px solid #2a3138;
-  overflow:hidden;
-}
 
-/* 古いブラウザ用フォールバック（aspect-ratio未対応時） */
-@supports not (aspect-ratio: 1 / 1) {
-  .thumb{ position:relative; height:auto; }
-  .thumb::before{
-    content:"";
+  .card{border:1px solid var(--line);border-radius:14px;background:#0f1419;overflow:hidden}
+  /* サムネ枠：ここで高さを作る（必ず表示） */
+  .thumb{
     display:block;
-    padding-top:56.25%;          /* 16:9の比率で高さを作る */
+    width:100%;
+    aspect-ratio:16/9;                /* 16:9 で固定 */
+    background:#0b0f14 center/cover no-repeat;
+    border-bottom:1px solid var(--line);
   }
-}
+  /* aspect-ratio 非対応ブラウザのフォールバック */
+  @supports not (aspect-ratio: 1 / 1) {
+    .thumb{ position:relative; }
+    .thumb::before{ content:""; display:block; padding-top:56.25%; }
+  }
+
   .meta{padding:12px}
   .title{font-weight:700;margin:0 0 8px}
   .info{color:#b3c9db;font-size:.95rem;margin:0 0 12px}
@@ -51,24 +47,27 @@
     </header>
 
     <section class="grid">
+      <!-- 第1話 -->
       <article class="card">
-       <a class="thumb"
-   style="background-image:url('/Manga/images/kekkan_0001_1200.webp')"
-   href="./01/"></a>
+        <!-- サムネ画像は /Manga/images/ 配下にある実ファイル名に合わせてね -->
+        <a class="thumb" style="background-image:url('/Manga/images/kekkan_0001_1200.webp')" href="/Manga/kekkan/01/"></a>
         <div class="meta">
           <h2 class="title">欠陥品タウン</h2>
-          <a class="btn" href="./01/">読む</a>
+          <p class="info">第1話</p>
+          <a class="btn" href="/Manga/kekkan/01/">読む</a>
+        </div>
+      </article>
+
+      <!-- 第2話（公開済みならサムネを差し替えてOK。未公開ならこのブロックは消してもOK） -->
+      <article class="card">
+        <a class="thumb" style="background-image:url('/Manga/images/kekkan_0001_1200.webp')" href="/Manga/kekkan/02/"></a>
+        <div class="meta">
+          <h2 class="title">欠陥品タウン</h2>
+          <p class="info">第2話</p>
+          <a class="btn" href="/Manga/kekkan/02/">読む</a>
         </div>
       </article>
     </section>
   </div>
 </body>
 </html>
-<!-- 第2話 -->
-<article class="card">
-  <a class="thumb" style="background-image:url('../images/sakanai_0001.jpg')" href="./02/"></a>
-  <div class="meta">
-    <h2 class="title">咲かない花のこどもたち</h2>
-    <a class="btn" href="./02/">読む</a>
-  </div>
-</article>
