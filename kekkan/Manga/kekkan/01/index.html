@@ -3,57 +3,111 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>欠陥品の記憶｜第1話</title>
+<title>欠陥品の記憶｜第1話（診断）</title>
 <style>
-  :root{ --bg:#0b0f12; --text:#eaf6ff; --line:#2a3138; }
-  *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Serif JP","Yu Mincho","Hiragino Mincho ProN",serif}
-  header{position:sticky;top:0;background:#0d1319;border-bottom:1px solid var(--line);padding:10px 12px;z-index:10}
+  body{margin:0;background:#0b0f12;color:#eaf6ff;font-family:"Noto Serif JP","Yu Mincho",serif}
+  header{position:sticky;top:0;z-index:10;background:#0d1319;border-bottom:1px solid #2a3138;padding:10px 12px}
   a{color:#9fc9ff;text-decoration:none}
   .wrap{max-width:1100px;margin:0 auto;padding:10px 12px 60px}
-  .page{display:block;margin:0 auto 16px;max-width:100%;height:auto;background:#0f1419;border:1px solid var(--line);border-radius:8px}
-  .topbar{display:flex;gap:12px;align-items:center}
-  .topbar .home{margin-left:auto;border:1px solid #324356;padding:6px 10px;border-radius:10px}
+  .box{background:#0f1419;border:1px solid #2a3138;border-radius:10px;padding:12px;margin:10px 0}
+  .fail{color:#ff9d9d}
+  .ok{color:#8ff3a3}
+  .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.92rem;white-space:pre-wrap;word-break:break-all}
+  img.page{display:block;margin:8px auto 16px;max-width:100%;height:auto;background:#0f1419;border:1px solid #2a3138;border-radius:8px}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .pill{border:1px solid #324356;padding:4px 8px;border-radius:999px}
+  .small{font-size:.9rem;opacity:.9}
 </style>
 </head>
 <body>
-  <header>
-    <div class="topbar">
-      <strong>欠陥品の記憶 — 第1話</strong>
-      <a class="home" href="/Manga/kekkan/">← 各話一覧へ</a>
-    </div>
-  </header>
+<header class="wrap">
+  <div class="row">
+    <strong>欠陥品の記憶 — 第1話（診断モード）</strong>
+    <a class="pill" href="/Manga/kekkan/">← 各話一覧へ</a>
+  </div>
+</header>
 
-  <main class="wrap" id="viewer" aria-live="polite">
-    <p>読み込み中…</p>
-  </main>
+<main class="wrap" id="app">
+  <div class="box mono small">読み込み中…</div>
+</main>
 
 <script>
 (async () => {
-  const viewer = document.getElementById('viewer');
-  const manifestUrl = new URL('manifest.json', location.href);
-  try {
-    const res = await fetch(manifestUrl.toString());
-    if (!res.ok) throw new Error(`manifest fetch failed ${res.status} ${res.statusText} (${manifestUrl})`);
-    const files = await res.json();
-    viewer.innerHTML = '';
+  const app = document.getElementById('app');
+  const here = location.href;
+  const manifestUrl = new URL('manifest.json', here);
+  const log = (...a)=>console.log('[diag]', ...a);
 
-    for (const name of files) {
-      const imgUrl = new URL(name, location.href);
+  // fetch with no-store & BOM-safe JSON parse
+  async function fetchJsonBOMSafe(url){
+    const res = await fetch(url.toString(), { cache:'no-store' });
+    if(!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText} for ${url}`);
+    const text = await res.text();
+    const cleaned = text.replace(/^\uFEFF/, ''); // BOM除去
+    try{
+      return JSON.parse(cleaned);
+    }catch(e){
+      e.message = `JSON parse error for ${url}\n` + e.message + `\n\nRaw head:\n` + cleaned.slice(0,200);
+      throw e;
+    }
+  }
+
+  try{
+    const head = document.createElement('div');
+    head.className = 'box mono';
+    head.textContent = `manifest: ${manifestUrl}`;
+    app.innerHTML = '';
+    app.appendChild(head);
+
+    let files = await fetchJsonBOMSafe(manifestUrl);
+    if(!Array.isArray(files)) throw new Error('manifest is not an array');
+
+    // 表示：manifestの中身
+    const listBox = document.createElement('div');
+    listBox.className = 'box mono small';
+    listBox.innerHTML = `manifest entries (${files.length}):\n` + files.map(f=>`- ${f}`).join('\n');
+    app.appendChild(listBox);
+
+    // 各画像を実URLで検証＆描画
+    for(const name of files){
+      const url = new URL(name, here); // 必ず「/kekkan/01/ + name」
+
+      const row = document.createElement('div');
+      row.className = 'box mono';
+      row.innerHTML = `<div class="row">
+        <span>画像URL:</span>
+        <a href="${url}" target="_blank" rel="noopener">${url}</a>
+      </div>
+      <div class="small">読み込みテスト：<span id="st">…</span></div>`;
+      app.appendChild(row);
+
       const img = document.createElement('img');
       img.className = 'page';
-      img.loading = 'lazy';
-      img.decoding = 'async';
-      img.alt = '';
-      img.src = imgUrl.toString();
-      viewer.appendChild(img);
+      img.alt = name;
+
+      const st = row.querySelector('#st');
+      let ok = false;
+      await new Promise(resolve=>{
+        img.onload = ()=>{ ok = true; st.textContent = 'OK'; st.className='ok'; resolve(); };
+        img.onerror = ()=>{ st.textContent = 'NG（404/名前違いの可能性）'; st.className='fail'; resolve(); };
+        // キャッシュ回避用クエリ付与
+        img.src = url.toString() + (url.search ? '&' : '?') + 'v=' + Date.now();
+      });
+      app.appendChild(img);
+
+      if(!ok){
+        const hint = document.createElement('div');
+        hint.className = 'box mono small fail';
+        hint.textContent =
+          'ヒント: 上の画像URLを別タブで開いて 404 なら、/kekkan/01/ にその名前のファイルが無いか、拡張子・大文字小文字が違います。';
+        app.appendChild(hint);
+      }
     }
-  } catch (err) {
-    console.error(err);
-    viewer.innerHTML = `
-      <p>読み込みに失敗しました。ファイル配置と名前を確認してください。</p>
-      <pre style="white-space:pre-wrap;background:#111722;border:1px solid #2a3138;padding:10px;border-radius:8px">${String(err)}</pre>
-    `;
+  }catch(err){
+    const ebox = document.createElement('div');
+    ebox.className = 'box mono fail';
+    ebox.textContent = '読み込みエラー: ' + String(err);
+    app.appendChild(ebox);
   }
 })();
 </script>
