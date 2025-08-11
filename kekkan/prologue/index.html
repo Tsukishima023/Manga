@@ -16,21 +16,23 @@
 <script>
 (async()=>{
   const base = location.href;
-  const man  = new URL('./manifest.json', base);
+  // ★ キャッシュ回避のためにクエリを付与
+  const man  = new URL('manifest.json?v='+Date.now(), base);
   const v    = document.getElementById('v');
   try{
-    const r = await fetch(man, {cache:'no-store'});
+    const r = await fetch(man.toString(), {cache:'no-store'});
     if(!r.ok) throw new Error('manifest '+r.status);
-    // BOM除去してJSON化
+    // ★ BOM除去 → JSON
     const files = JSON.parse((await r.text()).replace(/^\uFEFF/, ''));
-    // ★ 並べ替えしない。manifestの順序のまま使う
+    // ★ 並べ替えしない（manifestの順序のまま）
     const list = files.filter(n=>/\.(png|jpe?g|webp)$/i.test(n));
     v.innerHTML = '';
     for(const name of list){
       const url = new URL('./'+name, base);
       const img = document.createElement('img');
       img.loading='lazy'; img.decoding='async';
-      img.src = url.toString()+'?v='+Date.now(); // キャッシュ回避
+      // 画像にもクエリ付けてキャッシュ回避
+      img.src = url.toString() + (url.search ? '&' : '?') + 'v=' + Date.now();
       v.appendChild(img);
     }
   }catch(e){
