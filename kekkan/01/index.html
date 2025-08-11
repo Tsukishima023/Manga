@@ -4,115 +4,174 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>欠陥品の記憶 — 第1話</title>
+<meta name="robots" content="noindex">
 <style>
   :root{
     --bg:#0b0f12; --card:#12181e; --line:#2a3138;
-    --text:#dfe8f1; --muted:#92b7d9; --accent:#f07b7b;
+    --text:#dfe8f1; --muted:#92b7d9; --accent:#ff7d7d; --ink:#aee6ff;
   }
-  html,body{margin:0;background:var(--bg);color:var(--text);font-family: "Hiragino Mincho ProN", "游明朝", YuMincho, "Yu Mincho", "MS PMincho", serif;}
-  header{position:sticky;top:0;z-index:10;background:linear-gradient(to bottom, rgba(11,15,18,.95), rgba(11,15,18,.7));backdrop-filter: blur(4px);border-bottom:1px solid var(--line);}
-  .bar{max-width:980px;margin:0 auto;display:flex;gap:.5rem;align-items:center;padding:.6rem .8rem;}
-  .title{font-size:1rem; letter-spacing:.08em;}
-  .spacer{flex:1;}
-  .btn{appearance:none;border:1px solid var(--line);background:#0f1419;color:var(--text);padding:.45rem .7rem;border-radius:10px;cursor:pointer}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);
+    font-family:"Hiragino Mincho ProN","游明朝","Yu Mincho","Noto Serif JP",serif}
+  /* ヘッダー */
+  header{position:sticky;top:0;z-index:10;
+    background:linear-gradient(to bottom, rgba(11,15,18,.95), rgba(11,15,18,.7));
+    backdrop-filter: blur(4px); border-bottom:1px solid var(--line)}
+  .bar{max-width:980px;margin:0 auto;display:flex;gap:.6rem;align-items:center;padding:.6rem .8rem}
+  .title{font-size:1rem; letter-spacing:.08em}
+  .sp{flex:1}
+  .btn{
+    appearance:none;border:1px solid var(--line);background:#0f1419;color:var(--text);
+    padding:.45rem .75rem;border-radius:10px;cursor:pointer
+  }
   .btn:hover{border-color:#3a4350}
   .btn[disabled]{opacity:.35;cursor:default}
-  .progress{font-size:.85rem;color:var(--muted)}
-  main{max-width:980px;margin:0 auto;padding:1rem .5rem 6rem;}
-  figure{margin:0 0 1rem 0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-  figure img{display:block;width:100%;height:auto;image-rendering:auto}
-  .foot{position:fixed;right:14px;bottom:14px;display:flex;flex-direction:column;gap:.5rem}
-  .foot .btn{border-radius:12px}
+  .progress{font-size:.88rem;color:var(--muted);min-width:4.5em;text-align:right}
+  /* ビュー本体 */
+  main{max-width:980px;margin:0 auto;padding:1rem .5rem 6rem}
+  figure{margin:0 0 1rem;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  img.page{display:block;width:100%;height:auto}
+  /* 下部フロート */
+  .float{position:fixed;right:14px;bottom:14px;display:flex;flex-direction:column;gap:.5rem}
+  .float .btn{border-radius:12px}
+  /* ローダー/エラー */
+  .notice{padding:1rem;border:1px solid var(--line);border-radius:12px;background:#0f1419;color:var(--muted);margin:1rem 0}
+  .err{color:#ff9d9d}
+  /* フッター著作権 */
+  footer{max-width:980px;margin:2rem auto 3rem;color:var(--ink);opacity:.85;padding:0 .5rem;font-size:.9rem}
 </style>
 </head>
 <body>
   <header>
     <div class="bar">
       <div class="title">欠陥品の記憶 — 第1話</div>
-      <div class="spacer"></div>
+      <div class="sp"></div>
       <div class="progress" id="prog">0 / 0</div>
       <button class="btn" id="prevBtn" title="前のページ（←）">前へ</button>
       <button class="btn" id="nextBtn" title="次のページ（→）">次へ</button>
     </div>
   </header>
 
-  <main id="viewer"></main>
+  <main id="viewer">
+    <div class="notice" id="status">読み込み中…</div>
+  </main>
 
-  <div class="foot">
+  <div class="float">
     <button class="btn" id="topBtn" title="最上部へ">↑ Top</button>
   </div>
 
+  <footer>
+    当ページの漫画画像は著作物です。無断転載・二次配布・機械学習データへの利用を禁じます。
+  </footer>
+
 <script>
-(async () => {
-  // manifest.json を取得
-  const res = await fetch('manifest.json', {cache:'no-store'});
-  if(!res.ok){
-    document.getElementById('viewer').innerHTML =
-      '<p style="color:#f88;padding:1rem;">manifest.json が読み込めませんでした。</p>';
+/* ===== 設定（必要なら変更） ===== */
+const MANIFEST_URL = 'manifest.json';           // 同フォルダのmanifest
+const LAZY_MARGIN  = '800px';                   // 遅延読み込みの先読み幅
+const PAGE_PARAM   = 'p';                       // クエリで ?p=12 のように指定可
+
+(async function init(){
+  const viewer = document.getElementById('viewer');
+  const status = document.getElementById('status');
+  const prog   = document.getElementById('prog');
+  const prevBtn= document.getElementById('prevBtn');
+  const nextBtn= document.getElementById('nextBtn');
+  const topBtn = document.getElementById('topBtn');
+
+  // manifest を取得
+  let files = [];
+  try{
+    const res = await fetch(MANIFEST_URL, {cache:'no-store'});
+    if(!res.ok) throw new Error('manifest.json の取得に失敗');
+    files = await res.json();
+    // 画像拡張子のみ
+    files = files.filter(n=>/\.(webp|jpg|jpeg|png)$/i.test(n)).sort();
+  }catch(e){
+    status.classList.add('err');
+    status.textContent = 'エラー：manifest.json が読み込めません。配置とファイル名を確認してください。';
+    console.error(e);
     return;
   }
-  /** @type {string[]} */
-  let files = await res.json();
-
-  // 画像以外が入っていた場合の簡易フィルター（webp/jpg/jpegのみ）
-  files = files.filter(n => /\.(webp|jpg|jpeg)$/i.test(n));
-  files.sort(); // 念のためソート
-
-  const viewer = document.getElementById('viewer');
-  const prog = document.getElementById('prog');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const topBtn  = document.getElementById('topBtn');
 
   if(files.length === 0){
-    viewer.innerHTML = '<p style="padding:1rem;">ページ画像が見つかりません。</p>';
+    status.classList.add('err');
+    status.textContent = 'エラー：表示できるページ画像が見つかりません。';
     return;
   }
 
-  // 画像を並べる（lazy）
-  files.forEach((name, idx) => {
+  // 一旦クリア
+  status.remove();
+
+  // 遅延ロード用オブザーバ
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(ent=>{
+      if(ent.isIntersecting){
+        const img = ent.target;
+        if(img.dataset.src){
+          img.src = img.dataset.src;
+          img.removeAttribute('data-src');
+        }
+        io.unobserve(img);
+      }
+    });
+  }, {rootMargin: LAZY_MARGIN});
+
+  // 画像を並べる
+  const figs = [];
+  files.forEach((name, idx)=>{
     const fig = document.createElement('figure');
     const img = document.createElement('img');
+    img.className = 'page';
+    img.alt = `p${idx+1}`;
     img.loading = 'lazy';
     img.decoding = 'async';
-    img.alt = `p${idx+1}`;
-    img.src = name;
+    img.dataset.src = name;     // IntersectionObserverで実際のsrcに入れる
+    img.onerror = ()=>{ img.alt = '(読み込み失敗)'; img.style.opacity=.6 };
     fig.appendChild(img);
     viewer.appendChild(fig);
+    io.observe(img);
+    figs.push(fig);
   });
 
-  // ページ位置から現在ページを推定（単純に画面上端に一番近いimg）
-  const imgs = [...viewer.querySelectorAll('img')];
-  const updateProgress = () => {
-    let active = 1;
-    const y = window.scrollY + 80; // ヘッダ分
+  // プログレス
+  const imgs = Array.from(viewer.querySelectorAll('img.page'));
+  const getActiveIndex = ()=>{
+    const y = window.scrollY + 100; // ヘッダ考慮
+    let active = 0;
     for(let i=0;i<imgs.length;i++){
-      const rect = imgs[i].getBoundingClientRect();
-      const top = rect.top + window.scrollY;
-      if(top <= y) active = i+1; else break;
+      const top = imgs[i].getBoundingClientRect().top + window.scrollY;
+      if(top <= y) active = i; else break;
     }
-    prog.textContent = `${active} / ${imgs.length}`;
-    prevBtn.disabled = (active <= 1);
-    nextBtn.disabled = (active >= imgs.length);
+    return active;
+  };
+  const updateProgress = ()=>{
+    const i = getActiveIndex();
+    prog.textContent = `${i+1} / ${imgs.length}`;
+    prevBtn.disabled = (i<=0);
+    nextBtn.disabled = (i>=imgs.length-1);
+    history.replaceState(null,'', setPageParam(i+1));
   };
 
-  const scrollToPage = (p) => {
-    const i = Math.min(Math.max(1, p), imgs.length) - 1;
+  // スクロール関数
+  const scrollToPage = (p)=>{
+    const i = Math.max(1, Math.min(p, imgs.length)) - 1;
     imgs[i].scrollIntoView({behavior:'smooth', block:'start'});
   };
 
-  // ボタンとキー操作
-  prevBtn.addEventListener('click', () => {
-    const now = parseInt(prog.textContent.split('/')[0]);
-    scrollToPage(now - 1);
-  });
-  nextBtn.addEventListener('click', () => {
-    const now = parseInt(prog.textContent.split('/')[0]);
-    scrollToPage(now + 1);
-  });
-  topBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+  // クエリ ?p= から開始ページ
+  const startP = parseInt(new URL(location.href).searchParams.get(PAGE_PARAM)||'1', 10);
+  if(startP>1) setTimeout(()=>scrollToPage(startP), 50);
+
+  // 事件
   window.addEventListener('scroll', updateProgress, {passive:true});
   window.addEventListener('resize', updateProgress);
+  prevBtn.addEventListener('click', ()=>{
+    const now = getActiveIndex()+1; scrollToPage(now-1);
+  });
+  nextBtn.addEventListener('click', ()=>{
+    const now = getActiveIndex()+1; scrollToPage(now+1);
+  });
+  topBtn.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
   window.addEventListener('keydown', (e)=>{
     if(e.key === 'ArrowRight') nextBtn.click();
     if(e.key === 'ArrowLeft')  prevBtn.click();
@@ -121,6 +180,13 @@
 
   // 初期表示
   updateProgress();
+
+  // helper: URLの ?p= を更新
+  function setPageParam(p){
+    const url = new URL(location.href);
+    url.searchParams.set(PAGE_PARAM, p);
+    return url.pathname + url.search + url.hash;
+  }
 })();
 </script>
 </body>
