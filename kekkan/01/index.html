@@ -3,191 +3,69 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>欠陥品の記憶 — 第1話</title>
-<meta name="robots" content="noindex">
+<title>欠陥品の記憶 | 各話一覧</title>
 <style>
-  :root{
-    --bg:#0b0f12; --card:#12181e; --line:#2a3138;
-    --text:#dfe8f1; --muted:#92b7d9; --accent:#ff7d7d; --ink:#aee6ff;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--text);
-    font-family:"Hiragino Mincho ProN","游明朝","Yu Mincho","Noto Serif JP",serif}
-  /* ヘッダー */
-  header{position:sticky;top:0;z-index:10;
-    background:linear-gradient(to bottom, rgba(11,15,18,.95), rgba(11,15,18,.7));
-    backdrop-filter: blur(4px); border-bottom:1px solid var(--line)}
-  .bar{max-width:980px;margin:0 auto;display:flex;gap:.6rem;align-items:center;padding:.6rem .8rem}
-  .title{font-size:1rem; letter-spacing:.08em}
-  .sp{flex:1}
-  .btn{
-    appearance:none;border:1px solid var(--line);background:#0f1419;color:var(--text);
-    padding:.45rem .75rem;border-radius:10px;cursor:pointer
-  }
-  .btn:hover{border-color:#3a4350}
-  .btn[disabled]{opacity:.35;cursor:default}
-  .progress{font-size:.88rem;color:var(--muted);min-width:4.5em;text-align:right}
-  /* ビュー本体 */
-  main{max-width:980px;margin:0 auto;padding:1rem .5rem 6rem}
-  figure{margin:0 0 1rem;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-  img.page{display:block;width:100%;height:auto}
-  /* 下部フロート */
-  .float{position:fixed;right:14px;bottom:14px;display:flex;flex-direction:column;gap:.5rem}
-  .float .btn{border-radius:12px}
-  /* ローダー/エラー */
-  .notice{padding:1rem;border:1px solid var(--line);border-radius:12px;background:#0f1419;color:var(--muted);margin:1rem 0}
-  .err{color:#ff9d9d}
-  /* フッター著作権 */
-  footer{max-width:980px;margin:2rem auto 3rem;color:var(--ink);opacity:.85;padding:0 .5rem;font-size:.9rem}
+  :root{ --bg:#0b0f12; --panel:#12181e; --line:#2a3138; --text:#eaf6ff; --sub:#9fc9ff; --accent:#ff7d7d; }
+  *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Serif JP","Yu Mincho","Hiragino Mincho ProN",serif}
+  .wrap{max-width:1100px;margin:20px auto 60px;padding:0 16px}
+  header{display:flex;align-items:center;gap:12px;margin:10px 0 18px}
+  h1{margin:0;font-size:22px;color:var(--accent)}
+  a.home{margin-left:auto;color:var(--sub);text-decoration:none;border:1px solid #324356;padding:6px 10px;border-radius:10px}
+  a.home:hover{background:#0f141a}
+  .grid{display:grid;gap:18px;grid-template-columns:repeat(2,1fr)}
+  @media (max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{border:1px solid var(--line);border-radius:14px;background:#0f1419;overflow:hidden;display:flex;flex-direction:column}
+  .thumb{aspect-ratio:16/9;background:#0b0f14 center/cover no-repeat}
+  .meta{padding:12px}
+  .title{font-weight:700;margin:0 0 8px}
+  .info{color:#b3c9db;font-size:.95rem;margin:0 0 12px}
+  .actions{display:flex;gap:10px}
+  .btn{flex:1;text-align:center;border:1px solid #3b4d60;padding:10px 12px;border-radius:10px;color:var(--sub);text-decoration:none}
+  .btn:hover{background:#0f1822}
+  .btn.disabled{opacity:.6;pointer-events:none}
+  footer{margin:26px 0 40px;color:#9fc9ff;text-align:center;font-size:.9rem}
 </style>
 </head>
 <body>
-  <header>
-    <div class="bar">
-      <div class="title">欠陥品の記憶 — 第1話</div>
-      <div class="sp"></div>
-      <div class="progress" id="prog">0 / 0</div>
-      <button class="btn" id="prevBtn" title="前のページ（←）">前へ</button>
-      <button class="btn" id="nextBtn" title="次のページ（→）">次へ</button>
-    </div>
-  </header>
+  <div class="wrap">
+    <header>
+      <h1>欠陥品の記憶 — 各話一覧</h1>
+      <a class="home" href="../index.html">← トップへ</a>
+    </header>
 
-  <main id="viewer">
-    <div class="notice" id="status">読み込み中…</div>
-  </main>
+    <section class="grid" id="list"></section>
 
-  <div class="float">
-    <button class="btn" id="topBtn" title="最上部へ">↑ Top</button>
+    <footer>© 惑星脳メシ漫画荘</footer>
   </div>
 
-  <footer>
-    当ページの漫画画像は著作物です。無断転載・二次配布・機械学習データへの利用を禁じます。
-  </footer>
-
 <script>
-/* ===== 設定（必要なら変更） ===== */
-const MANIFEST_URL = 'manifest.json';           // 同フォルダのmanifest
-const LAZY_MARGIN  = '800px';                   // 遅延読み込みの先読み幅
-const PAGE_PARAM   = 'p';                       // クエリで ?p=12 のように指定可
+/* ここに各話データを追加していくだけ */
+const episodes = [
+  {
+    id: "01",
+    title: "欠陥品タウン — 第1話",
+    thumb: "samune_1200.webp, // 置けるならシリーズ用サムネ/任意の画像
+    url: "./01/index.html",
+    ready: true   // 公開済みなら true、準備中なら false
+  },
+  // 2話以降の例：
+  // { id:"02", title:"咲かない花の子供たち", thumb:"../images/kekkan-02.jpg", url:"./02/index.html", ready:false },
+];
 
-(async function init(){
-  const viewer = document.getElementById('viewer');
-  const status = document.getElementById('status');
-  const prog   = document.getElementById('prog');
-  const prevBtn= document.getElementById('prevBtn');
-  const nextBtn= document.getElementById('nextBtn');
-  const topBtn = document.getElementById('topBtn');
-
-  // manifest を取得
-  let files = [];
-  try{
-    const res = await fetch(MANIFEST_URL, {cache:'no-store'});
-    if(!res.ok) throw new Error('manifest.json の取得に失敗');
-    files = await res.json();
-    // 画像拡張子のみ
-    files = files.filter(n=>/\.(webp|jpg|jpeg|png)$/i.test(n)).sort();
-  }catch(e){
-    status.classList.add('err');
-    status.textContent = 'エラー：manifest.json が読み込めません。配置とファイル名を確認してください。';
-    console.error(e);
-    return;
-  }
-
-  if(files.length === 0){
-    status.classList.add('err');
-    status.textContent = 'エラー：表示できるページ画像が見つかりません。';
-    return;
-  }
-
-  // 一旦クリア
-  status.remove();
-
-  // 遅延ロード用オブザーバ
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(ent=>{
-      if(ent.isIntersecting){
-        const img = ent.target;
-        if(img.dataset.src){
-          img.src = img.dataset.src;
-          img.removeAttribute('data-src');
-        }
-        io.unobserve(img);
-      }
-    });
-  }, {rootMargin: LAZY_MARGIN});
-
-  // 画像を並べる
-  const figs = [];
-  files.forEach((name, idx)=>{
-    const fig = document.createElement('figure');
-    const img = document.createElement('img');
-    img.className = 'page';
-    img.alt = `p${idx+1}`;
-    img.loading = 'lazy';
-    img.decoding = 'async';
-    img.dataset.src = name;     // IntersectionObserverで実際のsrcに入れる
-    img.onerror = ()=>{ img.alt = '(読み込み失敗)'; img.style.opacity=.6 };
-    fig.appendChild(img);
-    viewer.appendChild(fig);
-    io.observe(img);
-    figs.push(fig);
-  });
-
-  // プログレス
-  const imgs = Array.from(viewer.querySelectorAll('img.page'));
-  const getActiveIndex = ()=>{
-    const y = window.scrollY + 100; // ヘッダ考慮
-    let active = 0;
-    for(let i=0;i<imgs.length;i++){
-      const top = imgs[i].getBoundingClientRect().top + window.scrollY;
-      if(top <= y) active = i; else break;
-    }
-    return active;
-  };
-  const updateProgress = ()=>{
-    const i = getActiveIndex();
-    prog.textContent = `${i+1} / ${imgs.length}`;
-    prevBtn.disabled = (i<=0);
-    nextBtn.disabled = (i>=imgs.length-1);
-    history.replaceState(null,'', setPageParam(i+1));
-  };
-
-  // スクロール関数
-  const scrollToPage = (p)=>{
-    const i = Math.max(1, Math.min(p, imgs.length)) - 1;
-    imgs[i].scrollIntoView({behavior:'smooth', block:'start'});
-  };
-
-  // クエリ ?p= から開始ページ
-  const startP = parseInt(new URL(location.href).searchParams.get(PAGE_PARAM)||'1', 10);
-  if(startP>1) setTimeout(()=>scrollToPage(startP), 50);
-
-  // 事件
-  window.addEventListener('scroll', updateProgress, {passive:true});
-  window.addEventListener('resize', updateProgress);
-  prevBtn.addEventListener('click', ()=>{
-    const now = getActiveIndex()+1; scrollToPage(now-1);
-  });
-  nextBtn.addEventListener('click', ()=>{
-    const now = getActiveIndex()+1; scrollToPage(now+1);
-  });
-  topBtn.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
-  window.addEventListener('keydown', (e)=>{
-    if(e.key === 'ArrowRight') nextBtn.click();
-    if(e.key === 'ArrowLeft')  prevBtn.click();
-    if(e.key.toLowerCase() === 'h') window.scrollTo({top:0, behavior:'smooth'});
-  });
-
-  // 初期表示
-  updateProgress();
-
-  // helper: URLの ?p= を更新
-  function setPageParam(p){
-    const url = new URL(location.href);
-    url.searchParams.set(PAGE_PARAM, p);
-    return url.pathname + url.search + url.hash;
-  }
-})();
+const container = document.getElementById('list');
+container.innerHTML = episodes.map(ep => `
+  <article class="card">
+    <a class="thumb" style="background-image:url('${ep.thumb || ''}')" href="${ep.ready ? ep.url : '#'}" aria-label="${ep.title}"></a>
+    <div class="meta">
+      <h2 class="title">${ep.title}</h2>
+      <p class="info">第${parseInt(ep.id,10)}話</p>
+      <div class="actions">
+        ${ep.ready ? `<a class="btn" href="${ep.url}">読む</a>` : `<span class="btn disabled">準備中</span>`}
+      </div>
+    </div>
+  </article>
+`).join('');
 </script>
 </body>
 </html>
+
