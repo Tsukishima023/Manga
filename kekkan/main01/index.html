@@ -1,1 +1,38 @@
-
+<!doctype html><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>欠陥品の記憶｜第1話</title>
+<style>
+  body{margin:0;background:#0b0f12;color:#eaf6ff;font-family:"Noto Serif JP","Yu Mincho",serif}
+  header{position:sticky;top:0;background:#0d1319;border-bottom:1px solid #2a3138;padding:10px 12px}
+  a{color:#9fc9ff;text-decoration:none}
+  main{max-width:1100px;margin:0 auto;padding:10px 12px 60px}
+  img{display:block;width:100%;height:auto;margin:0 0 16px;background:#0f1419;border:1px solid #2a3138;border-radius:8px}
+</style>
+<header>
+  <strong>欠陥品の記憶 — 第1話</strong>　
+  <a href="/Manga/kekkan/">← 各話一覧へ</a>
+</header>
+<main id="v"><p>読み込み中…</p></main>
+<script>
+(async()=>{
+  const base = location.href;
+  const man  = new URL('manifest.json?v='+Date.now(), base);
+  const v    = document.getElementById('v');
+  try{
+    const r = await fetch(man, {cache:'no-store'});
+    if(!r.ok) throw new Error('manifest '+r.status);
+    const files = JSON.parse((await r.text()).replace(/^\uFEFF/, ''));
+    const list = files.filter(n=>/\.(png|jpe?g|webp)$/i.test(n));
+    v.innerHTML = '';
+    for(const name of list){
+      const url = new URL('./'+name, base);
+      const img = document.createElement('img');
+      img.loading='lazy'; img.decoding='async';
+      img.src = url.toString() + '?v=' + Date.now();
+      v.appendChild(img);
+    }
+  }catch(e){
+    v.innerHTML = '<p>読み込み失敗。/kekkan/main01/ に index.html・manifest.json・画像が並んでいるか確認してね。</p><pre>'+e+'</pre>';
+  }
+})();
+</script>
